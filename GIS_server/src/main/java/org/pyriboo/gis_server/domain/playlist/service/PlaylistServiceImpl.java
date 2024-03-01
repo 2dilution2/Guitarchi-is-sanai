@@ -1,5 +1,10 @@
 package org.pyriboo.gis_server.domain.playlist.service;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.pyriboo.gis_server.domain.playlist.dto.AddSongReq;
 import org.pyriboo.gis_server.domain.playlist.dto.PlaylistReq;
 import org.pyriboo.gis_server.domain.playlist.dto.PlaylistRes;
 import org.pyriboo.gis_server.domain.playlist.model.Playlist;
@@ -8,9 +13,6 @@ import org.pyriboo.gis_server.domain.song.model.Song;
 import org.pyriboo.gis_server.domain.song.repository.SongRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class PlaylistServiceImpl implements PlaylistService {
@@ -63,16 +65,11 @@ public class PlaylistServiceImpl implements PlaylistService {
 	}
 
 	@Override
-	public void addSongToPlaylist(String playlistId, String songId) {
-		Playlist playlist = playlistRepository.findById(playlistId)
-			.orElseThrow(() -> new RuntimeException("Playlist not found with id: " + playlistId));
-		Song song = songRepository.findById(songId)
-			.orElseThrow(() -> new RuntimeException("Song not found with id: " + songId));
-
-		// 노래를 플레이리스트에 추가
-		playlist.getSongs().add(song);
-
-		// 플레이리스트 업데이트
+	public void addSongs(AddSongReq addSongReq) {
+		Playlist playlist = playlistRepository.findById(addSongReq.getPlaylistId())
+			.orElseThrow(() -> new RuntimeException("Playlist not found"));
+		List<Song> songsToAdd = songRepository.findAllById(addSongReq.getSongIds());
+		playlist.getSongs().addAll(songsToAdd);
 		playlistRepository.save(playlist);
 	}
 
