@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.pyriboo.gis_server.domain.playlist.dto.AddSongReq;
+import org.pyriboo.gis_server.domain.playlist.model.Playlist;
+import org.pyriboo.gis_server.domain.playlist.repository.PlaylistRepository;
 import org.pyriboo.gis_server.domain.song.dto.SongReq;
 import org.pyriboo.gis_server.domain.song.dto.SongRes;
 import org.pyriboo.gis_server.domain.song.model.Song;
@@ -16,6 +19,9 @@ public class SongServiceImpl implements SongService {
 
 	@Autowired
 	private SongRepository songRepository;
+
+	@Autowired
+	private PlaylistRepository playlistRepository;
 
 	@Override
 	public SongRes createSong(SongReq songReq) {
@@ -54,6 +60,15 @@ public class SongServiceImpl implements SongService {
 			return convertToDto(updatedSong);
 		}
 		return null;
+	}
+
+	@Override
+	public void addSongToPlaylist(AddSongReq addSongReq) {
+		Playlist playlist = playlistRepository.findById(addSongReq.getPlaylistId())
+			.orElseThrow(() -> new RuntimeException("Playlist not found"));
+		List<Song> songsToAdd = songRepository.findAllById(addSongReq.getSongIds());
+		playlist.getSongs().addAll(songsToAdd);
+		playlistRepository.save(playlist);
 	}
 
 	@Override
