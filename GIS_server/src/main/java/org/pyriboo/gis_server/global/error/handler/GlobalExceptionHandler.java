@@ -1,9 +1,9 @@
 package org.pyriboo.gis_server.global.error.handler;
 
 import org.pyriboo.gis_server.global.error.exception.CommonException;
-import org.pyriboo.gis_server.global.error.exception.PlaylistNotFoundException;
-import org.pyriboo.gis_server.global.error.exception.SongNotFoundException;
-import org.pyriboo.gis_server.global.error.exception.UserNotFoundException;
+import org.pyriboo.gis_server.global.error.exception.PlaylistException;
+import org.pyriboo.gis_server.global.error.exception.SongException;
+import org.pyriboo.gis_server.global.error.exception.UserException;
 import org.pyriboo.gis_server.global.error.model.ErrorResponse;
 import org.pyriboo.gis_server.global.error.type.CommonErrorType;
 import org.pyriboo.gis_server.global.error.type.PlaylistErrorType;
@@ -31,8 +31,8 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(errorResponse, errorType.getStatus());
 	}
 
-	@ExceptionHandler(UserNotFoundException.class)
-	public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
+	@ExceptionHandler(UserException.class)
+	public ResponseEntity<ErrorResponse> handleUserException(UserException ex) {
 		UserErrorType errorType = ex.getErrorCode();
 
 		ErrorResponse errorResponse = ErrorResponse.builder()
@@ -44,8 +44,8 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(errorResponse, errorType.getStatus());
 	}
 
-	@ExceptionHandler(SongNotFoundException.class)
-	public ResponseEntity<ErrorResponse> handleSongNotFoundException(SongNotFoundException ex) {
+	@ExceptionHandler(SongException.class)
+	public ResponseEntity<ErrorResponse> handleSongException(SongException ex) {
 		SongErrorType errorType = ex.getErrorType();
 
 		ErrorResponse errorResponse = ErrorResponse.builder()
@@ -57,8 +57,8 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(errorResponse, errorType.getStatus());
 	}
 
-	@ExceptionHandler(PlaylistNotFoundException.class)
-	public ResponseEntity<ErrorResponse> handlePlaylistNotFoundException(PlaylistNotFoundException ex) {
+	@ExceptionHandler(PlaylistException.class)
+	public ResponseEntity<ErrorResponse> handlePlaylistException(PlaylistException ex) {
 		PlaylistErrorType errorType = ex.getErrorType();
 
 		ErrorResponse errorResponse = ErrorResponse.builder()

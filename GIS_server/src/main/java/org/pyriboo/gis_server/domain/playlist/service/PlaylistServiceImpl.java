@@ -11,7 +11,7 @@ import org.pyriboo.gis_server.domain.playlist.repository.PlaylistRepository;
 import org.pyriboo.gis_server.domain.song.model.Song;
 import org.pyriboo.gis_server.domain.song.repository.SongRepository;
 import org.pyriboo.gis_server.global.error.exception.PlaylistException;
-import org.pyriboo.gis_server.global.error.exception.SongNotFoundException;
+import org.pyriboo.gis_server.global.error.exception.SongException;
 import org.pyriboo.gis_server.global.error.type.PlaylistErrorType;
 import org.pyriboo.gis_server.global.error.type.SongErrorType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +93,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		List<Song> songsToAdd = songRepository.findAllById(addSongReq.getSongIds());
 		if (songsToAdd.size() != addSongReq.getSongIds().size()) {
 			// 제공된 모든 노래 ID가 유효하지 않은 경우
-			throw new SongNotFoundException(SongErrorType.SONG_NOT_FOUND);
+			throw new SongException(SongErrorType.SONG_NOT_FOUND);
 		}
 
 		playlist.getSongs().addAll(songsToAdd);
