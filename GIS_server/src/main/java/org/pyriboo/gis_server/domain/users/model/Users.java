@@ -1,5 +1,7 @@
 package org.pyriboo.gis_server.domain.users.model;
 
+import org.pyriboo.gis_server.global.entity.BaseTime;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -14,7 +16,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Users {
+public class Users extends BaseTime {
 
 	@Id
 	private String email;

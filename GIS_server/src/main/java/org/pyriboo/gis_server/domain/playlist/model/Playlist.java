@@ -3,6 +3,7 @@ package org.pyriboo.gis_server.domain.playlist.model;
 import java.util.List;
 
 import org.pyriboo.gis_server.domain.song.model.Song;
+import org.pyriboo.gis_server.global.entity.BaseTime;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -17,7 +18,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Playlist {
+public class Playlist extends BaseTime {
 
 	@Id
 	private String id;
