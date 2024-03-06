@@ -29,5 +29,5 @@ public class Users extends BaseTime {
 
 	private String nickname;
 
-	private UserType userType;
+	private Role role;
 }

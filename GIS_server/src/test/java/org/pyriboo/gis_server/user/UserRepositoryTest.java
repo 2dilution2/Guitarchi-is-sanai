@@ -1,7 +1,7 @@
 package org.pyriboo.gis_server.user;
 
 import org.junit.jupiter.api.Test;
-import org.pyriboo.gis_server.domain.users.model.UserType;
+import org.pyriboo.gis_server.domain.users.model.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -22,7 +22,7 @@ public class UserRepositoryTest {
 	@Test
 	public void testCreateAndFindUserByEmail() {
 		// Users 엔티티 생성 및 저장
-		Users newUser = new Users("user@example.com", "securePassword", "User Name", "010-0000-0000", "userNickname", UserType.DEFAULT);
+		Users newUser = new Users("user@example.com", "securePassword", "User Name", "010-0000-0000", "userNickname", Role.DEFAULT);
 		entityManager.persistAndFlush(newUser);
 
 		// 저장된 Users 엔티티 조회
@@ -35,6 +35,6 @@ public class UserRepositoryTest {
 		assertThat(foundUser.getName()).isEqualTo("User Name");
 		assertThat(foundUser.getPhone()).isEqualTo("010-0000-0000");
 		assertThat(foundUser.getNickname()).isEqualTo("userNickname");
-		assertThat(foundUser.getUserType()).isEqualTo(UserType.DEFAULT);
+		assertThat(foundUser.getRole()).isEqualTo(Role.DEFAULT);
 	}
 }

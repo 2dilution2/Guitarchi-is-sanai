@@ -1,5 +1,5 @@
 package org.pyriboo.gis_server.domain.users.model;
 
-public enum UserType {
+public enum Role {
 	DEFAULT, ADMIN, BANED, ANONYMOUS,
 }
