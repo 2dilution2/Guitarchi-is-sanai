@@ -2,6 +2,7 @@ package org.pyriboo.gis_server.global.security.jwt;
 
 import io.jsonwebtoken.Jwts;
 
+import org.pyriboo.gis_server.domain.users.model.Role;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -14,11 +15,20 @@ import java.util.Date;
 public class JwtProvider {
 
 	private final SecretKey secretKey;
+	private final Long accessTokenExpirationInMillis = 30 * 60 * 1000L; // 30분
+	private final Long refreshTokenExpirationInMillis = 30 * 24 * 60 * 60 * 1000L; // 30일
+
 
 	public JwtProvider(@Value("${spring.jwt.secret}")String secret) {
-
 		secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
+	}
 
+	public String createAccessToken(String email, Role role) {
+		return createJwt(email, role, accessTokenExpirationInMillis);
+	}
+
+	public String createRefreshToken(String email, Role role) {
+		return createJwt(email, role, refreshTokenExpirationInMillis);
 	}
 
 	public String getEmail(String token) {
@@ -54,7 +64,7 @@ public class JwtProvider {
 			.before(new Date());
 	}
 
-	public String createJwt(String username, String role, Long expiredMs) {
+	public String createJwt(String username, Role role, Long expiredMs) {
 
 		return Jwts.builder()
 			.claim("username", username)

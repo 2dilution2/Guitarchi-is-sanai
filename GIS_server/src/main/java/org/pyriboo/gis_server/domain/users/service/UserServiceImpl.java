@@ -7,24 +7,23 @@ import org.pyriboo.gis_server.domain.users.model.Users;
 import org.pyriboo.gis_server.domain.users.repository.UserRepository;
 import org.pyriboo.gis_server.global.error.exception.UserException;
 import org.pyriboo.gis_server.global.error.type.UserErrorType;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.pyriboo.gis_server.global.security.jwt.JwtProvider;
+import org.pyriboo.gis_server.global.security.jwt.TokenResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
-
-	@Autowired
-	public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-		this.userRepository = userRepository;
-		this.passwordEncoder = passwordEncoder;
-	}
+	private final JwtProvider jwtProvider;
 
 	@Override
-	public Users saveUser(Users user) {
+	public Users signup(Users user) {
 		try {
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
 			return userRepository.save(user);
@@ -32,6 +31,25 @@ public class UserServiceImpl implements UserService {
 			// 회원가입 과정에서 예외가 발생한 경우
 			throw new UserException(UserErrorType.USER_AUTHENTICATION_FAILED);
 		}
+	}
+
+	@Override
+	public TokenResponse loginUser(String email, String password) {
+		Users user = userRepository.findById(email)
+			.orElseThrow(() -> new UserException(UserErrorType.USER_NOT_FOUND));
+
+		if (!passwordEncoder.matches(password, user.getPassword())) {
+			throw new UserException(UserErrorType.INVALID_PASSWORD);
+		}
+
+		String accessToken = jwtProvider.createAccessToken(email, user.getRole());
+		String refreshToken = jwtProvider.createRefreshToken(email, user.getRole());
+
+		TokenResponse tokenResponse = new TokenResponse();
+		tokenResponse.setAccessToken(accessToken);
+		tokenResponse.setRefreshToken(refreshToken);
+
+		return tokenResponse;
 	}
 
 	@Override

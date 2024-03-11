@@ -20,32 +20,26 @@ public class JwtFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-		String authorization = null;
-		Cookie[] cookies = request.getCookies();
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals("Authorization")) {
-					authorization = cookie.getValue();
-					break;
-				}
-			}
-		}
+		String path = request.getRequestURI();
 
-		if (authorization == null) {
-
-			System.out.println("token null");
+		if (path.contains("/api/users/signup") || path.contains("/api/users/login")) {
 			filterChain.doFilter(request, response);
-
 			return;
 		}
 
-		String token = authorization;
+		String authorization = request.getHeader("Authorization");
+		if (authorization == null || !authorization.startsWith("Bearer ")) {
+			System.out.println("token null");
+			filterChain.doFilter(request, response);
+			return;
+		}
+
+		// "Bearer " 접두어 제거
+		String token = authorization.substring(7);
 
 		if (jwtTokenProvider.isExpired(token)) {
-
 			System.out.println("token expired");
 			filterChain.doFilter(request, response);
-
 			return;
 		}
 
