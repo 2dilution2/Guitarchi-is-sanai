@@ -3,6 +3,7 @@ package org.pyriboo.gis_server.domain.users.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.pyriboo.gis_server.domain.users.model.Role;
 import org.pyriboo.gis_server.domain.users.model.Users;
 import org.pyriboo.gis_server.domain.users.repository.UserRepository;
 import org.pyriboo.gis_server.global.error.exception.UserException;
@@ -26,9 +27,9 @@ public class UserServiceImpl implements UserService {
 	public Users signup(Users user) {
 		try {
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
+			user.setRole(Role.DEFAULT);
 			return userRepository.save(user);
 		} catch (Exception e) {
-			// 회원가입 과정에서 예외가 발생한 경우
 			throw new UserException(UserErrorType.USER_AUTHENTICATION_FAILED);
 		}
 	}
